@@ -1,10 +1,25 @@
 <div class="container">
   <h1>Angular5 Forms</h1>
-  <form #form="ngForm" novalidate>
-    <div class="form-group">
-        <label for="firstName">First Name</label>
+  <form #form="ngForm" novalidate (submit)="submitForm(form)">
+    <div class="form-group" [class.has-error]="firstName.invalid">
+        <label for="firstName" class="control-label">First Name</label>
         <input type="text" placeholder="firstName" class="form-control"
-        [ngModel]="model.firstName" (ngModelChange)="firstToUpper($event)" name="firstName" id="firstName">
+        [ngModel]="model.firstName" (ngModelChange)="firstToUpper($event)" name="firstName" 
+        id="firstName" required minlength="3"
+        #firstName="ngModel">
+        <div class="alert alert-danger" *ngIf="firstName.invalid">
+          First Name is Required & min value is 3
+        </div>
+    </div>
+    <h3>Classes</h3>
+    <h3>{{firstName.invalid}}</h3>
+    <div class="form-group" [class.has-error]="phone.invalid">
+      <label for="Phone" class="control-label">Phone</label>
+      <input type="text" placeholder="phone" class="form-control" required pattern="[0-9]{10}"
+      [(ngModel)]="model.phone" name="phone" id="Phone" #phone="ngModel">
+      <div class="alert alert-warning" *ngIf="phone.invalid">
+        Enter valid number
+      </div>
     </div>
     <div class="form-group">
         <label for="lastName">Last Name</label>
@@ -26,9 +41,14 @@
           <input type="radio" name="gender" value="male" [(ngModel)]="model.gender">Male
         </label>
     </div>
-    <div class="form-group">
+    <div class="form-group" [class.has-error]="hasCodeLangError">
       <label>Primary Language</label>
-      <select class="form-control" name="codeLang" [(ngModel)]="model.codeLang">
+      <div class="alert alert-danger" *ngIf="hasCodeLangError">
+          Select valid Option
+      </div>
+      <select class="form-control" name="codeLang" [(ngModel)]="model.codeLang"
+      (blur)="validDropDown($event)">
+        <option value="default">Select Code Lang</option>
         <option *ngFor="let lang of languages" >
           {{lang}}
         </option>
